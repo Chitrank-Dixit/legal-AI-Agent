@@ -1,0 +1,5 @@
+{
+  "name": "Legal Remedy RAG Agent",
+  "description": "An AI agent that uses Retrieval-Augmented Generation (RAG) to answer legal questions based on user-provided documents. Upload your files to build context and ask the agent for insights and remedies.",
+  "requestFramePermissions": []
+}
