@@ -22,6 +22,9 @@ interface TranslationMessages {
     confirmClear: string;
     cancelClear: string;
     chatCleared: string;
+    summarizeChat: string;
+    summarizingChat: string;
+    summaryTitle: string;
 }
 
 export const translations: Record<string, TranslationMessages> = {
@@ -47,6 +50,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "Confirm",
     cancelClear: "Cancel",
     chatCleared: "Chat history has been cleared.",
+    summarizeChat: "Summarize Chat",
+    summarizingChat: "Summarizing conversation...",
+    summaryTitle: "Conversation Summary:",
   },
   hi: { // Hindi
     appTitle: "कानूनी उपाय एआई एजेंट",
@@ -70,6 +76,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "पुष्टि करें",
     cancelClear: "रद्द करें",
     chatCleared: "चैट का इतिहास साफ़ कर दिया गया है।",
+    summarizeChat: "चैट का सारांश करें",
+    summarizingChat: "बातचीत का सारांश किया जा रहा है...",
+    summaryTitle: "बातचीत का सारांश:",
   },
   ta: { // Tamil
     appTitle: "சட்ட தீர்வு AI முகவர்",
@@ -93,6 +102,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "உறுதிப்படுத்தவும்",
     cancelClear: "ரத்துசெய்",
     chatCleared: "அரட்டை வரலாறு அழிக்கப்பட்டது.",
+    summarizeChat: "அரட்டையை சுருக்கவும்",
+    summarizingChat: "உரையாடலை சுருக்கமாகக் கூறுகிறது...",
+    summaryTitle: "உரையாடல் சுருக்கம்:",
   },
   kn: { // Kannada
     appTitle: "ಕಾನೂನು ಪರಿಹಾರ AI ಏಜೆಂಟ್",
@@ -116,6 +128,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "ಖಚಿತಪಡಿಸಿ",
     cancelClear: "ರದ್ದುಮಾಡಿ",
     chatCleared: "ಚಾಟ್ ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸಲಾಗಿದೆ.",
+    summarizeChat: "ಚಾಟ್ ಸಾರಾಂಶ ಮಾಡಿ",
+    summarizingChat: "ಸಂಭಾಷಣೆಯನ್ನು ಸಾರಾಂಶ ಮಾಡಲಾಗುತ್ತಿದೆ...",
+    summaryTitle: "ಸಂಭಾಷಣೆಯ ಸಾರಾಂಶ:",
   },
   ml: { // Malayalam
     appTitle: "നിയമപരമായ പരിഹാരത്തിനുള്ള AI ഏജന്റ്",
@@ -139,6 +154,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "സ്ഥിരീകരിക്കുക",
     cancelClear: "റദ്ദാക്കുക",
     chatCleared: "ചാറ്റ് ചരിത്രം മായ്‌ച്ചു.",
+    summarizeChat: "ചാറ്റ് സംഗ്രഹിക്കുക",
+    summarizingChat: "സംഭാഷണം സംഗ്രഹിക്കുന്നു...",
+    summaryTitle: "സംഭാഷണ സംഗ്രഹം:",
   },
   te: { // Telugu
     appTitle: "చట్టపరమైన పరిష్కార AI ఏజెంట్",
@@ -162,6 +180,9 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "నిర్ధారించండి",
     cancelClear: "రద్దు చేయండి",
     chatCleared: "చాట్ చరిత్ర క్లియర్ చేయబడింది.",
+    summarizeChat: "చాట్‌ను సంగ్రహించండి",
+    summarizingChat: "సంభాషణను సంగ్రహిస్తోంది...",
+    summaryTitle: "సంభాషణ సారాంశం:",
   },
   bn: { // Bengali
     appTitle: "আইনি প্রতিকার এআই এজেন্ট",
@@ -185,5 +206,8 @@ export const translations: Record<string, TranslationMessages> = {
     confirmClear: "নিশ্চিত করুন",
     cancelClear: "বাতিল করুন",
     chatCleared: "চ্যাটের ইতিহাস সাফ করা হয়েছে।",
+    summarizeChat: "চ্যাটের সারসংক্ষেপ করুন",
+    summarizingChat: "কথোপকথনের সারসংক্ষেপ করা হচ্ছে...",
+    summaryTitle: "কথোপকথনের সারসংক্ষেপ:",
   },
 };

@@ -6,7 +6,9 @@ interface ChatInterfaceProps {
     messages: Message[];
     onSendMessage: (query: string) => void;
     onClearChat: () => void;
+    onSummarizeChat: () => void;
     isLoading: boolean;
+    isSummarizing: boolean;
     isDisabled: boolean;
     language: string;
     translations: Record<string, any>;
@@ -24,8 +26,14 @@ const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     </svg>
 );
 
+const SummarizeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a.375.375 0 0 1-.375-.375V6.75A3.75 3.75 0 0 0 10.5 3H5.625Zm1.5 1.5v3.75c0 .621.504 1.125 1.125 1.125h3.75V1.5H7.125ZM12 1.5v7.5h4.5a2.25 2.25 0 0 1 2.25 2.25v8.25a.375.375 0 0 1-.375.375H5.625a.375.375 0 0 1-.375-.375V3.375c0-.207.168-.375.375-.375H12ZM15 15h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 0 1.5Zm0 3h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 0 1.5Z" />
+    </svg>
+);
 
-export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage, onClearChat, isLoading, isDisabled, language, translations }) => {
+
+export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage, onClearChat, onSummarizeChat, isLoading, isSummarizing, isDisabled, language, translations }) => {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const t = translations[language];
@@ -36,7 +44,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
 
     useEffect(() => {
         scrollToBottom();
-    }, [messages, isLoading]);
+    }, [messages, isLoading, isSummarizing]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,20 +55,32 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
     };
 
     const isChatClearable = messages.length > 1;
+    const isSummarizeable = messages.filter(m => m.role === 'user' || m.role === 'model').length >= 2;
 
     return (
         <div className="flex flex-col h-full bg-slate-800/50 border border-slate-700 rounded-lg">
             <header className="p-4 border-b border-slate-700 flex justify-between items-center">
                 <h2 className="text-xl font-semibold text-slate-100">{t.chatHeader}</h2>
-                <button
-                    onClick={onClearChat}
-                    disabled={!isChatClearable || isLoading}
-                    className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    aria-label={t.clearChat}
-                    title={t.clearChat}
-                >
-                    <TrashIcon className="w-5 h-5" />
-                </button>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={onSummarizeChat}
+                        disabled={!isSummarizeable || isLoading || isSummarizing}
+                        className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label={t.summarizeChat}
+                        title={t.summarizeChat}
+                    >
+                        <SummarizeIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                        onClick={onClearChat}
+                        disabled={!isChatClearable || isLoading || isSummarizing}
+                        className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label={t.clearChat}
+                        title={t.clearChat}
+                    >
+                        <TrashIcon className="w-5 h-5" />
+                    </button>
+                </div>
             </header>
 
             <div className="flex-1 overflow-y-auto p-6">
@@ -96,11 +116,11 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={isDisabled ? t.placeholderDisabled : t.placeholderEnabled}
                         className="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
-                        disabled={isLoading || isDisabled}
+                        disabled={isLoading || isDisabled || isSummarizing}
                     />
                     <button
                         type="submit"
-                        disabled={isLoading || isDisabled || !input.trim()}
+                        disabled={isLoading || isDisabled || !input.trim() || isSummarizing}
                         className="bg-sky-600 text-white p-2 rounded-md hover:bg-sky-500 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors duration-200"
                     >
                         <SendIcon className="w-5 h-5" />

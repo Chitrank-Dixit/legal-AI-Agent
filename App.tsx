@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { ChatInterface } from './components/ChatInterface';
-import { askWithContext } from './services/geminiService';
+import { askWithContext, summarizeChat } from './services/geminiService';
 import type { Message } from './types';
 import { translations } from './translations';
 
@@ -11,6 +11,7 @@ const App: React.FC = () => {
     const [fileNames, setFileNames] = useState<string[]>([]);
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isSummarizing, setIsSummarizing] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [language, setLanguage] = useState<string>('en');
     const [showClearConfirm, setShowClearConfirm] = useState<boolean>(false);
@@ -92,12 +93,58 @@ const App: React.FC = () => {
                 content: t.chatCleared,
             }
         ]);
+        if (context) {
+             setMessages(prev => [
+                ...prev,
+                {
+                    id: `system-context-retained-${Date.now()}`,
+                    role: 'system',
+                    content: t.contextLoaded(fileNames.length)
+                }
+            ]);
+        }
         setShowClearConfirm(false);
     };
 
     const handleClearChatCancel = () => {
         setShowClearConfirm(false);
     };
+
+    const handleSummarizeChat = useCallback(async () => {
+        setIsSummarizing(true);
+        const summarizingMessage: Message = {
+            id: 'system-summarizing',
+            role: 'system',
+            content: t.summarizingChat
+        };
+        setMessages(prev => [...prev, summarizingMessage]);
+
+        const historyToSummarize = messages
+            .filter(msg => msg.role === 'user' || msg.role === 'model')
+            .map(msg => `${msg.role === 'user' ? 'User' : 'AI Assistant'}: ${msg.content}`)
+            .join('\n\n');
+
+        try {
+            const summary = await summarizeChat(historyToSummarize, language);
+            const summaryMessage: Message = {
+                id: `system-summary-${Date.now()}`,
+                role: 'system',
+                content: `${t.summaryTitle}\n${summary}`
+            };
+            setMessages(prev => [...prev.filter(m => m.id !== 'system-summarizing'), summaryMessage]);
+        } catch (err) {
+             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+             const errorMessageObj: Message = {
+                id: `system-error-${Date.now()}`,
+                role: 'system',
+                content: `${t.errorPrefix} ${errorMessage}`
+            };
+            setMessages(prev => [...prev.filter(m => m.id !== 'system-summarizing'), errorMessageObj]);
+        } finally {
+            setIsSummarizing(false);
+        }
+
+    }, [messages, language, t]);
 
     return (
         <div className="min-h-screen bg-slate-900 font-sans">
@@ -164,7 +211,7 @@ const App: React.FC = () => {
                     <div className="lg:col-span-1">
                         <FileUpload 
                             onFilesProcessed={handleFilesProcessed} 
-                            isDisabled={isLoading}
+                            isDisabled={isLoading || isSummarizing}
                             language={language}
                             translations={translations} 
                         />
@@ -174,7 +221,9 @@ const App: React.FC = () => {
                             messages={messages} 
                             onSendMessage={handleSendMessage}
                             onClearChat={requestClearChat}
+                            onSummarizeChat={handleSummarizeChat}
                             isLoading={isLoading}
+                            isSummarizing={isSummarizing}
                             isDisabled={!context}
                             language={language}
                             translations={translations}

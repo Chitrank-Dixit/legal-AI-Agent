@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 // It's assumed that process.env.API_KEY is available in the execution environment.
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+const model = 'gemini-2.5-flash';
 
 export async function askWithContext(context: string, query: string): Promise<string> {
   if (!context) {
@@ -10,8 +11,6 @@ export async function askWithContext(context: string, query: string): Promise<st
   if (!query) {
     throw new Error("Query is empty. Please enter a question.");
   }
-
-  const model = 'gemini-2.5-flash';
 
   const prompt = `
 You are a highly specialized legal assistant. Your purpose is to analyze the provided legal documents and formulate concise resolutions and remedies based strictly on the information contained within them.
@@ -44,4 +43,39 @@ Legal Resolution:`;
     }
     return "An unknown error occurred while communicating with the AI.";
   }
+}
+
+export async function summarizeChat(chatHistory: string, language: string): Promise<string> {
+    if (!chatHistory) {
+        throw new Error("Chat history is empty.");
+    }
+
+    const prompt = `
+You are a summarization expert. Your task is to read the following chat conversation between a "User" and an "AI Assistant" and provide a brief, neutral summary. The summary should capture the main questions asked by the user and the key information or resolutions provided by the assistant.
+
+**Instructions:**
+1. Keep the summary concise (2-4 sentences is ideal).
+2. Do not add any new information or your own opinions.
+3. Base the summary strictly on the conversation provided.
+4. Provide the summary in the following language: ${language}.
+
+--- CHAT HISTORY START ---
+${chatHistory}
+--- CHAT HISTORY END ---
+
+Summary:`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: model,
+            contents: prompt,
+        });
+        return response.text;
+    } catch (error) {
+        console.error("Error calling Gemini API for summarization:", error);
+        if (error instanceof Error) {
+            return `An error occurred while summarizing the chat: ${error.message}`;
+        }
+        return "An unknown error occurred while summarizing the chat.";
+    }
 }
