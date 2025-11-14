@@ -17,50 +17,71 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, isDisa
     const [files, setFiles] = useState<File[]>([]);
     const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
+    const [isDragging, setIsDragging] = useState(false);
+    const [progress, setProgress] = useState(0);
     const t = translations[language];
 
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFiles = event.target.files;
-        if (!selectedFiles || selectedFiles.length === 0) return;
+    const processFiles = useCallback(async (filesToProcess: FileList) => {
+        if (!filesToProcess || filesToProcess.length === 0) return;
 
         setStatus('processing');
         setError(null);
-        setFiles(Array.from(selectedFiles));
+        setProgress(0);
+        setFiles(Array.from(filesToProcess));
 
-        const supportedTypes = ['text/plain', 'text/markdown', 'application/json', 'text/html', 'text/xml', 'application/pdf', 'application/msword'];
-        
         let combinedContent = '';
         const processedFileNames: string[] = [];
-        // FIX: Explicitly type the 'file' parameter as 'File' to ensure correct type inference.
-        const filePromises = Array.from(selectedFiles).map((file: File) => {
-             // A simple check, not exhaustive. For production, more robust checks are needed.
-            // if (!supportedTypes.some(type => file.type.startsWith(type))) {
-            //     console.warn(`Unsupported file type: ${file.name} (${file.type}). Skipping.`);
-            //     return Promise.resolve();
-            // }
-
-            return new Promise<void>((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => {
-                    combinedContent += `\n\n--- Document: ${file.name} ---\n\n${reader.result}`;
-                    processedFileNames.push(file.name);
-                    resolve();
-                };
-                reader.onerror = () => {
-                    console.error(`Error reading file: ${file.name}`);
-                    reject(new Error(`Error reading file: ${file.name}`));
-                };
-                reader.readAsText(file);
-            });
-        });
 
         try {
-            await Promise.all(filePromises);
+            for (let i = 0; i < filesToProcess.length; i++) {
+                const file = filesToProcess[i];
+                await new Promise<void>((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        combinedContent += `\n\n--- Document: ${file.name} ---\n\n${reader.result}`;
+                        processedFileNames.push(file.name);
+                        resolve();
+                    };
+                    reader.onerror = () => {
+                        console.error(`Error reading file: ${file.name}`);
+                        reject(new Error(`Error reading file: ${file.name}`));
+                    };
+                    reader.readAsText(file);
+                });
+                // Update progress after each file is processed
+                setProgress(((i + 1) / filesToProcess.length) * 100);
+            }
             onFilesProcessed(combinedContent, processedFileNames);
             setStatus('success');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unknown error occurred');
             setStatus('error');
+        }
+    }, [onFilesProcessed]);
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            processFiles(event.target.files);
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        if (!isDisabled) {
+            setIsDragging(true);
+        }
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragging(false);
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setIsDragging(false);
+        if (!isDisabled && event.dataTransfer.files) {
+            processFiles(event.dataTransfer.files);
         }
     };
 
@@ -69,16 +90,31 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, isDisa
             <h2 className="text-xl font-semibold text-slate-100 mb-4">{t.buildContextTitle}</h2>
             <p className="text-slate-400 mb-6 text-sm">{t.buildContextDescription}</p>
             
-            <div className="relative border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-sky-500 transition-colors duration-300">
+            <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-300 ${isDisabled ? 'opacity-50' : 'hover:border-sky-500'} ${isDragging ? 'border-sky-500 bg-slate-700/50' : 'border-slate-600'}`}
+            >
                 <PaperClipIcon className="mx-auto h-12 w-12 text-slate-500"/>
-                <label htmlFor="file-upload" className={`relative cursor-pointer font-semibold text-sky-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-sky-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-sky-300 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                <label htmlFor="file-upload" className={`relative cursor-pointer font-semibold text-sky-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-sky-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-sky-300 ${isDisabled ? 'cursor-not-allowed' : ''}`}>
                     <span>{t.selectFiles}</span>
                     <input id="file-upload" name="file-upload" type="file" className="sr-only" multiple onChange={handleFileChange} disabled={isDisabled || status === 'processing'}/>
                 </label>
                 <p className="text-xs text-slate-500 mt-1">{t.dragAndDrop}</p>
             </div>
-            {status === 'processing' && <p className="text-sm text-yellow-400 mt-4">{t.processingFiles}</p>}
-            {status === 'error' && <p className="text-sm text-red-400 mt-4">{t.errorPrefix} {error}</p>}
+
+            <div className="mt-4">
+                {status === 'processing' && (
+                    <div>
+                        <p className="text-sm text-yellow-400 mb-2">{t.processingFiles} ({Math.round(progress)}%)</p>
+                        <div className="w-full bg-slate-700 rounded-full h-2">
+                            <div className="bg-sky-500 h-2 rounded-full transition-all duration-300 ease-in-out" style={{ width: `${progress}%` }}></div>
+                        </div>
+                    </div>
+                )}
+                {status === 'error' && <p className="text-sm text-red-400">{t.errorPrefix} {error}</p>}
+            </div>
 
             {files.length > 0 && (
                 <div className="mt-6 flex-grow overflow-y-auto">
