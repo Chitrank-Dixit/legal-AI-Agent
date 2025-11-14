@@ -3,6 +3,8 @@ import React, { useState, useCallback } from 'react';
 interface FileUploadProps {
     onFilesProcessed: (content: string, fileNames: string[]) => void;
     isDisabled: boolean;
+    language: string;
+    translations: Record<string, any>;
 }
 
 const PaperClipIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -11,10 +13,11 @@ const PaperClipIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     </svg>
 );
 
-export const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, isDisabled }) => {
+export const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, isDisabled, language, translations }) => {
     const [files, setFiles] = useState<File[]>([]);
     const [status, setStatus] = useState<'idle' | 'processing' | 'success' | 'error'>('idle');
     const [error, setError] = useState<string | null>(null);
+    const t = translations[language];
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = event.target.files;
@@ -63,23 +66,23 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, isDisa
 
     return (
         <div className="border border-slate-700 rounded-lg p-6 bg-slate-800/50 h-full flex flex-col">
-            <h2 className="text-xl font-semibold text-slate-100 mb-4">Build Context</h2>
-            <p className="text-slate-400 mb-6 text-sm">Upload legal documents (.txt, .md, etc.) to provide context for the AI agent.</p>
+            <h2 className="text-xl font-semibold text-slate-100 mb-4">{t.buildContextTitle}</h2>
+            <p className="text-slate-400 mb-6 text-sm">{t.buildContextDescription}</p>
             
             <div className="relative border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-sky-500 transition-colors duration-300">
                 <PaperClipIcon className="mx-auto h-12 w-12 text-slate-500"/>
                 <label htmlFor="file-upload" className={`relative cursor-pointer font-semibold text-sky-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-sky-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-sky-300 ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                    <span>Select files to upload</span>
+                    <span>{t.selectFiles}</span>
                     <input id="file-upload" name="file-upload" type="file" className="sr-only" multiple onChange={handleFileChange} disabled={isDisabled || status === 'processing'}/>
                 </label>
-                <p className="text-xs text-slate-500 mt-1">or drag and drop</p>
+                <p className="text-xs text-slate-500 mt-1">{t.dragAndDrop}</p>
             </div>
-            {status === 'processing' && <p className="text-sm text-yellow-400 mt-4">Processing files...</p>}
-            {status === 'error' && <p className="text-sm text-red-400 mt-4">Error: {error}</p>}
+            {status === 'processing' && <p className="text-sm text-yellow-400 mt-4">{t.processingFiles}</p>}
+            {status === 'error' && <p className="text-sm text-red-400 mt-4">{t.errorPrefix} {error}</p>}
 
             {files.length > 0 && (
                 <div className="mt-6 flex-grow overflow-y-auto">
-                    <h3 className="font-semibold text-slate-300 mb-2">Selected Files:</h3>
+                    <h3 className="font-semibold text-slate-300 mb-2">{t.selectedFiles}</h3>
                     <ul className="space-y-2">
                         {files.map((file, index) => (
                             <li key={index} className="text-sm text-slate-400 bg-slate-900/50 p-2 rounded truncate">{file.name}</li>

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import type { Message } from '../types';
 import { ChatMessage } from './ChatMessage';
@@ -6,8 +5,11 @@ import { ChatMessage } from './ChatMessage';
 interface ChatInterfaceProps {
     messages: Message[];
     onSendMessage: (query: string) => void;
+    onClearChat: () => void;
     isLoading: boolean;
     isDisabled: boolean;
+    language: string;
+    translations: Record<string, any>;
 }
 
 const SendIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
@@ -16,10 +18,17 @@ const SendIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     </svg>
 );
 
+const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
+        <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.006a.75.75 0 0 1-.749.654h-12.5a.75.75 0 0 1-.75-.654L5.334 6.66l-.21.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.347-9Zm5.198 0a.75.75 0 1 0-1.498.058l-.347 9a.75.75 0 0 0 1.5-.058l.347-9Z" clipRule="evenodd" />
+    </svg>
+);
 
-export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage, isLoading, isDisabled }) => {
+
+export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMessage, onClearChat, isLoading, isDisabled, language, translations }) => {
     const [input, setInput] = useState('');
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const t = translations[language];
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -37,10 +46,21 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
         }
     };
 
+    const isChatClearable = messages.length > 1;
+
     return (
         <div className="flex flex-col h-full bg-slate-800/50 border border-slate-700 rounded-lg">
-            <header className="p-4 border-b border-slate-700">
-                <h2 className="text-xl font-semibold text-slate-100">AI Assistant</h2>
+            <header className="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-slate-100">{t.chatHeader}</h2>
+                <button
+                    onClick={onClearChat}
+                    disabled={!isChatClearable || isLoading}
+                    className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    aria-label={t.clearChat}
+                    title={t.clearChat}
+                >
+                    <TrashIcon className="w-5 h-5" />
+                </button>
             </header>
 
             <div className="flex-1 overflow-y-auto p-6">
@@ -74,7 +94,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={isDisabled ? "Please upload documents to begin" : "Ask a question about your documents..."}
+                        placeholder={isDisabled ? t.placeholderDisabled : t.placeholderEnabled}
                         className="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
                         disabled={isLoading || isDisabled}
                     />
