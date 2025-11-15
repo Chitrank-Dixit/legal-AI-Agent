@@ -16,20 +16,29 @@ interface ChatInterfaceProps {
 
 const SendIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+        <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" />
     </svg>
 );
 
 const TrashIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path fillRule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.256 1.478l-.209-.035-1.005 13.006a.75.75 0 0 1-.749.654h-12.5a.75.75 0 0 1-.75-.654L5.334 6.66l-.21.035a.75.75 0 0 1-.256-1.478A48.567 48.567 0 0 1 7.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 0 1 3.369 0c1.603.051 2.815 1.387 2.815 2.951Zm-6.136-1.452a51.196 51.196 0 0 1 3.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 0 0-6 0v-.113c0-.794.609-1.428 1.364-1.452Zm-.355 5.945a.75.75 0 1 0-1.5.058l.347 9a.75.75 0 1 0 1.499-.058l-.347-9Zm5.198 0a.75.75 0 1 0-1.498.058l-.347 9a.75.75 0 0 0 1.5-.058l.347-9Z" clipRule="evenodd" />
+     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
     </svg>
 );
 
 const SummarizeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" {...props}>
-        <path d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0 0 16.5 9h-1.875a.375.375 0 0 1-.375-.375V6.75A3.75 3.75 0 0 0 10.5 3H5.625Zm1.5 1.5v3.75c0 .621.504 1.125 1.125 1.125h3.75V1.5H7.125ZM12 1.5v7.5h4.5a2.25 2.25 0 0 1 2.25 2.25v8.25a.375.375 0 0 1-.375.375H5.625a.375.375 0 0 1-.375-.375V3.375c0-.207.168-.375.375-.375H12ZM15 15h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 0 1.5Zm0 3h-3a.75.75 0 0 1 0-1.5h3a.75.75 0 0 1 0 1.5Z" />
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
     </svg>
+);
+
+const ModelIconSpinner: React.FC = () => (
+     <div className="w-9 h-9 rounded-full bg-slate-700 flex-shrink-0 flex items-center justify-center shadow-md border border-slate-600">
+       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-cyan-400">
+          <path d="M15.75 8.25a.75.75 0 01.75.75c0 1.12-.492 2.133-1.28 2.812a.75.75 0 01-1.062-1.062 2.25 2.25 0 00-.83-1.488.75.75 0 01.75-.75H15.75z" />
+          <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM6.262 6.512a.75.75 0 011.062 0 2.25 2.25 0 003.183 0 .75.75 0 111.06 1.06 3.75 3.75 0 01-5.302 0 .75.75 0 010-1.06zM9.75 12a.75.75 0 01.75-.75h3a.75.75 0 010 1.5h-3a.75.75 0 01-.75-.75zm-3.238 2.012a.75.75 0 010 1.06 3.75 3.75 0 01-5.303 0 .75.75 0 111.06-1.06 2.25 2.25 0 003.183 0z" clipRule="evenodd" />
+       </svg>
+    </div>
 );
 
 
@@ -58,14 +67,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
     const isSummarizeable = messages.filter(m => m.role === 'user' || m.role === 'model').length >= 2;
 
     return (
-        <div className="flex flex-col h-full bg-slate-800/50 border border-slate-700 rounded-lg">
-            <header className="p-4 border-b border-slate-700 flex justify-between items-center">
-                <h2 className="text-xl font-semibold text-slate-100">{t.chatHeader}</h2>
+        <div className="flex flex-col h-full bg-slate-900/70 border border-slate-800 rounded-xl shadow-lg">
+            <header className="p-4 border-b border-slate-800 flex justify-between items-center flex-shrink-0">
+                <h2 className="text-xl font-bold text-slate-100">{t.chatHeader}</h2>
                 <div className="flex items-center gap-2">
                     <button
                         onClick={onSummarizeChat}
                         disabled={!isSummarizeable || isLoading || isSummarizing}
-                        className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="p-2 rounded-full text-slate-400 hover:bg-slate-800 hover:text-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         aria-label={t.summarizeChat}
                         title={t.summarizeChat}
                     >
@@ -74,7 +83,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
                     <button
                         onClick={onClearChat}
                         disabled={!isChatClearable || isLoading || isSummarizing}
-                        className="p-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-slate-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="p-2 rounded-full text-slate-400 hover:bg-slate-800 hover:text-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                         aria-label={t.clearChat}
                         title={t.clearChat}
                     >
@@ -89,17 +98,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
                         <ChatMessage key={msg.id} message={msg} />
                     ))}
                     {isLoading && (
-                        <div className="flex items-start gap-4 my-4">
-                             <div className="w-8 h-8 rounded-full bg-slate-700 flex-shrink-0 flex items-center justify-center">
-                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-sky-400">
-                                  <path fillRule="evenodd" d="M9.315 7.584C12.195 3.883 19.86 3.798 23.333 7.497c2.173 2.22 2.623 5.347 1.343 7.958-1.28 2.61-4.035 4.093-6.936 4.093a8.21 8.21 0 0 1-6.162-2.735 8.21 8.21 0 0 1-2.162-5.462V9.375a.75.75 0 0 1 .75-.75h.383a3.515 3.515 0 0 0 2.822-1.046zM14.685 4.315C11.805.614 4.14.7 1.155 4.965a8.25 8.25 0 0 0 3.233 11.962A8.25 8.25 0 0 0 15.345 6.46v-.086a.75.75 0 0 0-.75-.75h-.383a3.515 3.515 0 0 1-2.822-1.046z" clipRule="evenodd"/>
-                               </svg>
-                            </div>
-                            <div className="max-w-xl rounded-lg p-4 bg-slate-700/50 rounded-bl-none">
+                        <div className="flex items-start gap-4 my-5 animate-fade-in">
+                            <ModelIconSpinner />
+                            <div className="max-w-xl rounded-2xl p-4 bg-slate-800 rounded-bl-none border border-slate-700/50">
                                 <div className="flex items-center justify-center space-x-2">
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse"></div>
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                                    <div className="w-2 h-2 rounded-full bg-slate-400 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                                    <div className="w-2 h-2 rounded-full bg-slate-500 animate-pulse"></div>
+                                    <div className="w-2 h-2 rounded-full bg-slate-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                                    <div className="w-2 h-2 rounded-full bg-slate-500 animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                                 </div>
                             </div>
                         </div>
@@ -108,20 +113,21 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ messages, onSendMe
                 <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-4 border-t border-slate-700">
-                <form onSubmit={handleSubmit} className="flex items-center gap-2">
+            <div className="p-4 border-t border-slate-800 flex-shrink-0">
+                <form onSubmit={handleSubmit} className="flex items-center gap-3">
                     <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder={isDisabled ? t.placeholderDisabled : t.placeholderEnabled}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-md py-2 px-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 disabled:opacity-50"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-full py-2.5 px-4 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition-all duration-200 disabled:opacity-50"
                         disabled={isLoading || isDisabled || isSummarizing}
                     />
                     <button
                         type="submit"
                         disabled={isLoading || isDisabled || !input.trim() || isSummarizing}
-                        className="bg-sky-600 text-white p-2 rounded-md hover:bg-sky-500 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors duration-200"
+                        className="bg-cyan-600 text-white p-2.5 rounded-full hover:bg-cyan-500 disabled:bg-slate-700 disabled:text-slate-500 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+                        aria-label="Send message"
                     >
                         <SendIcon className="w-5 h-5" />
                     </button>
